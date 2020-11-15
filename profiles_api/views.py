@@ -5,6 +5,10 @@ from rest_framework import status
 from profiles_api import serializers
 
 from rest_framework import viewsets
+from profiles_api import models
+
+from rest_framework.authentication import TokenAuthentication
+from profiles_api import permissions
 
 """from rest_framework import status : This is the list of handy http status codes that can be used when returning response from the API"""
 
@@ -13,7 +17,7 @@ class HelloApiView(APIView):
 	serializer_class = serializers.HelloSerializer
 
 	def get(self, request, format=None):
-		"""Retruns a list of APiview features"""
+		"""Returns a list of APiview features"""
 
 		an_apiview = [
 
@@ -120,3 +124,17 @@ class HelloViewSet(viewsets.ViewSet):
 	def destroy(self, request, pk=None):
 		"""Handle removing an object"""
 		return Response({'http_method':'dELETE'})
+
+
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+	"""Handle creating and updating profiles"""
+
+	serializer_class = serializers.UserProfileSerializer
+	queryset = models.UserProfile.objects.all()
+
+	authentication_classes = (TokenAuthentication,)
+		""" , after TokenAuthentication so that the token gets created as a tuple and not a single obj"""
+
+	permission_classes = (permissions.UpdateOwnProfile,)
