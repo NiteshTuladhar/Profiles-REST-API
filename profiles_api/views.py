@@ -3,7 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
+
+"""For searching objects"""
 from rest_framework import filters
+
+"""For login authentication"""
+from rest_framework.authtoken.views import ObtainAuthToken 
+from rest_framework.settings import api_settings
 
 from profiles_api import serializers
 from profiles_api import models
@@ -144,3 +150,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 	search_fields = ('name','email',) 
 	"""This search_field will allow us to search based on name and email"""
 
+
+class UserLoginApiView(ObtainAuthToken):
+	"""Handles creating user authentication tokens"""
+
+	"""renderer_classes is used so that class is visible in the browsable django admin site or browsable api"""
+	renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
