@@ -1,14 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-	
-from profiles_api import serializers
-
 from rest_framework import viewsets
-from profiles_api import models
-
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
+
+from profiles_api import serializers
+from profiles_api import models
 from profiles_api import permissions
+
+
 
 """from rest_framework import status : This is the list of handy http status codes that can be used when returning response from the API"""
 
@@ -135,6 +136,11 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 	queryset = models.UserProfile.objects.all()
 
 	authentication_classes = (TokenAuthentication,)
-		""" , after TokenAuthentication so that the token gets created as a tuple and not a single obj"""
+	""",after TokenAuthentication so that the token gets created as a tuple and not a single obj"""
 
 	permission_classes = (permissions.UpdateOwnProfile,)
+
+	filter_backends = (filters.SearchFilter,)
+	search_fields = ('name','email',) 
+	"""This search_field will allow us to search based on name and email"""
+

@@ -12,7 +12,7 @@ class UpdateOwnProfile(permissions.BasePermission):
 	def has_object_permission(self, request, view, obj):
 		"""Check user is trying to edit their own profile or not"""
 
-		"""SAFE_METHODS are the methods except get like post,update,delete"""
+		"""SAFE_METHODS are the methods like CREATE,GET,LIST that does not perform any destructive changes to the existing objects"""
 		if request.method in permissions.SAFE_METHODS:
 			return True
 
