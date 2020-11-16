@@ -38,3 +38,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		)
 
 		return user
+
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+	"""Serializes  profile feed items"""
+
+	class Meta:
+		model = models.ProfileFeedItem
+		fields = ('id','user_profile','status_text','created_on')
+		extra_kwargs = {'user_profile':{'read_only':True}}
+		"""extra_kwarg because we don't want user to be allowed assign user_profile field meaning one user cannot create a profile feed for another user so we use read only """

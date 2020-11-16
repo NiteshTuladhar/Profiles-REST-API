@@ -11,6 +11,10 @@ from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken 
 from rest_framework.settings import api_settings
 
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from rest_framework.permissions import IsAuthenticated
+
 from profiles_api import serializers
 from profiles_api import models
 from profiles_api import permissions
@@ -155,4 +159,32 @@ class UserLoginApiView(ObtainAuthToken):
 	"""Handles creating user authentication tokens"""
 
 	"""renderer_classes is used so that class is visible in the browsable django admin site or browsable api"""
+	"""Since other classes like UserProfileViewset that has viewsets.ModelViewSet has this by default but the ObtainAuthToken does not have it as default"""
 	renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+	"""Handles creating, reading and updating profile feed items"""
+	authentication_classes = {TokenAuthentication,}
+	serializer_class = serializers.ProfileFeedItemSerializer
+	queryset = models.ProfileFeedItem.objects.all()
+
+	permission_classes = {
+
+		permissions.UpdateOwnStatus,
+
+		IsAuthenticated
+
+
+	}
+
+	"""IsAuthenticatedOrReadOnly"""
+	"""The IsAuthenticatedorReadOnly allows unauthenticated user to view the feed but the IsAuthenticated does not allow the unauthenticated user to even view the feed"""
+
+	"""The permission_classes is taken from permission.py whose funtion is to not allow the unauthenticated user to create any feeds"""
+
+	def perform_create(self, serializer):
+		"""Sets the user profile to the logged in user while creating the feed which was set as readonly in serializer.py"""
+		serializer.save(user_profile = self.request.user)
+
